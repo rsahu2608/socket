@@ -2,12 +2,14 @@
 #include <sys/socket.h>
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <thread>
 #include <chrono> 
 #include <functional>
 #include <cstring>
 
+using namespace std;
 
 const int SIZE = 1024;
 
@@ -16,25 +18,28 @@ int tcount = 0;
 
 void write_file(int sockfd)
 {
-	int n;
-	FILE *fp;
-	const std::string filename = "recv.txt";
-	char buffer[SIZE];
 
-	fp = fopen(filename.c_str(), "w");
-	while (1) 
+	ofstream recvFile ("recv.txt");
+  	if (!recvFile.is_open())
+  	{
+  		cout << "Unable to open file";
+  		return;
+  	}
+  	
+  	char buffer[SIZE];
+  	while (1) 
 	{
-		n = recv(sockfd, buffer, SIZE, 0);
+		auto n = recv(sockfd, buffer, SIZE, 0);
 		if (n <= 0)
 		{
   			break;
 		  	return;
 		}
 		std::cout << "data : " << buffer << std::endl;
-		fprintf(fp, "%s", buffer);
+		recvFile << buffer;
 		memset(buffer, SIZE, 0);
-	}
-	return;
+	}	
+    recvFile.close();
 }
 
 int main()
@@ -82,8 +87,9 @@ int main()
         };
         */
         
-        threads.push_back(std::thread(write_file, newSocket));
+		threads.push_back(std::thread(write_file, newSocket));
         
+        // Join the threads once thread count reaches max 5, we can changes the max count as per our requirement.
 		if (threads.size() >= 5) 
 		{
 			for (std::thread& th : threads)
