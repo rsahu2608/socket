@@ -56,8 +56,8 @@ int main()
 
 	cout << "Connection established\n";
 
-	// It is reading a hardcoded fine name here, we can have a mechanisum which can read the files in a folder
-	// decide which files need to transfer by comparing the file modified time.
+	// Note that the client code is reading a hardcoded file, but we can have a mechanisum which can list the file names in a folder,
+   	// decide which files need to transfer by comparing the file modified time, and can transfer over socket.
 	string filename("send.txt");
   	send_file(filename, network_socket);
   	cout << "File data sent successfully.\n";
