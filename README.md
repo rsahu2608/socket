@@ -1,19 +1,21 @@
 This is a multithreaded socket program to transfer files from client to server.
 The server socket is capable of handeling multiple clients. Number of client to handel is also configurable. but at this point it is hardcoded.
 
-Note that the client code is reading a hardcoded file, but we can have a mechanisum which can list the file names in a folder,
-decide which files need to transfer by comparing the file modified time, and can transfer over socket.
+A cron job need to set as in cronjob.txt respectively in client/server machines. Bash script startServer.sh starts the server. startClient.sh goes to the location, list the "*.txt" (we can use any file types) in fileNames.txt, and then starts the client program.
+
+Client program:
+client reads the file fileNames.txt, loops through it to get the file names, transfers the files data to server.
+We can have a mechanisum to decide which files need to transfer by comparing the file modified time, and can transfer over socket.
+
+Server program:
+Server will validate the client and accepts. Once the client socket is accepted it creates the thread to communicate with client for further file transfer, and waits to serve for other client request.
+server is maintaining a vector of threads. When the thread count exceeds the max_count it waits for the threads to join. We can also implement the thread pool here to do the job.
 
 We can also create a communication between client server like
   client -> server : send "file_name" as a string
   server can create an file with name "file_name"
   client->server : send all file data
   server: copy all the dat from socket to file.
-
-
-Regarding the job run at a specific time:
-  We can create a cron job in linux which will run the client and server program in the specific machines at specific time. That will do our job.
-  
 
 
 NOTE: I know this is not a fully functioning program for our requirement but yes we can enhance it to serve our job better.
